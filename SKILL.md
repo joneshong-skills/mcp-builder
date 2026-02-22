@@ -17,6 +17,10 @@ Guide the creation of high-quality MCP (Model Context Protocol) servers that pro
 tools for LLM agents. An MCP server wraps APIs or services into discoverable,
 well-documented tools that agents can use effectively.
 
+## Agent Delegation
+
+Delegate MCP server implementation to `worker` agent.
+
 ## Workflow
 
 ### Phase 1: Deep Research and Planning
