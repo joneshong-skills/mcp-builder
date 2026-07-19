@@ -1,14 +1,10 @@
 ---
 name: mcp-builder
-description: >-
-  This skill should be used when the user asks to "build an MCP server",
-  "create an MCP server", "make an MCP tool", "建立 MCP server",
-  "寫 MCP 伺服器", "MCP 開發", "build MCP tools", mentions MCP server
-  development, or discusses creating Model Context Protocol servers
-  in Python or TypeScript.
+description: "mcp, builder, build, server, create, tool, tools, 建立 MCP server, 寫 MCP 伺服器, MCP 開發"
 version: 0.2.0
 tools: Read, Glob, Grep, Bash, Edit, Write
 argument-hint: "<service name or API to wrap>"
+disable-model-invocation: true
 ---
 
 # MCP Server Builder
