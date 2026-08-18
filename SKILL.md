@@ -4,7 +4,6 @@ description: "mcp, builder, build, server, create, tool, tools, 建立 MCP serve
 version: 0.2.0
 tools: Read, Glob, Grep, Bash, Edit, Write
 argument-hint: "<service name or API to wrap>"
-disable-model-invocation: true
 ---
 
 # MCP Server Builder
