@@ -169,8 +169,8 @@ Read `references/mcp_best_practices.md` for comprehensive guidelines on:
 
 **Python:**
 ```bash
-python -c "import py_compile; py_compile.compile('server.py', doraise=True)"
-python server.py --help
+~/.local/bin/python3 -c "import py_compile; py_compile.compile('server.py', doraise=True)"
+~/.local/bin/python3 server.py --help
 ```
 
 **TypeScript:**
@@ -191,7 +191,7 @@ claude mcp add <server-name> -- <command> <args>
 
 Create 10 evaluation questions to measure server quality with LLM agents.
 
-1. Run `python3 ~/.claude/skills/mcp-builder/scripts/evaluation.py` against the server
+1. Run `~/.local/bin/python3 ~/.claude/skills/mcp-builder/scripts/evaluation.py` against the server
 2. Questions must be independent, read-only, realistic, and verifiable
 3. Output format: XML with `<qa_pair>` elements
 
@@ -225,7 +225,7 @@ See `references/evaluation.md` for detailed guidelines and examples.
 {
   "mcpServers": {
     "my-server": {
-      "command": "python3",
+      "command": "/Users/joneshong/.local/bin/python3",
       "args": ["/path/to/server.py"],
       "env": { "API_KEY": "..." }
     }
@@ -235,27 +235,8 @@ See `references/evaluation.md` for detailed guidelines and examples.
 
 Or via CLI:
 ```bash
-claude mcp add my-server -- python3 /path/to/server.py
+claude mcp add my-server -- ~/.local/bin/python3 /path/to/server.py
 ```
-
-## Continuous Improvement
-
-This skill evolves with each use. After every invocation:
-
-1. **Reflect** — Identify what worked, what caused friction, and any unexpected issues
-2. **Record** — Append a concise lesson to `lessons.md` in this skill's directory
-3. **Refine** — When a pattern recurs (2+ times), update SKILL.md directly
-
-### lessons.md Entry Format
-
-```
-### YYYY-MM-DD — Brief title
-- **Friction**: What went wrong or was suboptimal
-- **Fix**: How it was resolved
-- **Rule**: Generalizable takeaway for future invocations
-```
-
-Accumulated lessons signal when to run `/skill-optimizer` for a deeper structural review.
 
 ## Additional Resources
 

@@ -430,7 +430,7 @@ For locally-run MCP servers (script launches the server automatically):
 ```bash
 ~/.local/bin/python3 scripts/evaluation.py \
   -t stdio \
-  -c python \
+  -c /Users/joneshong/.local/bin/python3 \
   -a my_mcp_server.py \
   evaluation.xml
 ```
@@ -439,7 +439,7 @@ With environment variables:
 ```bash
 ~/.local/bin/python3 scripts/evaluation.py \
   -t stdio \
-  -c python \
+  -c /Users/joneshong/.local/bin/python3 \
   -a my_mcp_server.py \
   -e API_KEY=abc123 \
   -e DEBUG=true \
@@ -521,7 +521,7 @@ The evaluation script generates a detailed report including:
 ```bash
 ~/.local/bin/python3 scripts/evaluation.py \
   -t stdio \
-  -c python \
+  -c /Users/joneshong/.local/bin/python3 \
   -a my_server.py \
   -o evaluation_report.md \
   evaluation.xml
@@ -562,7 +562,7 @@ export ANTHROPIC_API_KEY=your_api_key
 ```bash
 ~/.local/bin/python3 scripts/evaluation.py \
   -t stdio \
-  -c python \
+  -c /Users/joneshong/.local/bin/python3 \
   -a github_mcp_server.py \
   -e GITHUB_TOKEN=ghp_xxx \
   -o github_eval_report.md \
