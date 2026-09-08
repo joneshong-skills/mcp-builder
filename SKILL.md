@@ -66,88 +66,17 @@ Before defining tools, read `references/tool-design.md` for critical design guid
 
 ### Phase 2: Implementation
 
-#### 2.1 Project Structure
+Project layout (node), client/validation/tool scaffolding and full worked examples live in
+`references/python_mcp_server.md` (FastMCP) and `references/node_mcp_server.md` (TS SDK) — follow them.
+Python layout: `{service}_mcp/` → `server.py` (FastMCP instance + tools), `client.py` (API client, auth + errors), `models.py` (Pydantic), `formatters.py` (response formatting), `pyproject.toml`.
+Contract every tool must meet regardless of language:
 
-**Python:**
-```
-{service}_mcp/
-├── server.py          # FastMCP instance + tool definitions
-├── client.py          # API client with auth + error handling
-├── models.py          # Pydantic models
-├── formatters.py      # Response formatting
-└── pyproject.toml
-```
+- Responses agent-readable: Markdown, names alongside IDs, readable timestamps (not raw Unix)
+- Pagination via `limit`/`offset`, returning `has_more` + `next_offset`
+- Long responses truncated at ~25,000 chars with a message saying how to get the rest
+- Errors mapped per HTTP status (see Common Error Handling below)
 
-**TypeScript:**
-```
-{service}-mcp-server/
-├── src/
-│   ├── index.ts       # McpServer instance + tool registration
-│   ├── client.ts      # API client
-│   ├── schemas/       # Zod schemas
-│   ├── tools/         # Tool implementations
-│   └── types.ts
-├── package.json
-└── tsconfig.json
-```
-
-#### 2.2 Core Implementation Steps
-
-1. **Set up API client** — Centralized auth, base URL, error handling
-2. **Define input validation** — Pydantic models (Python) or Zod schemas (TypeScript)
-3. **Implement tools** — One function per tool, with proper annotations
-4. **Format responses** — Markdown for humans, JSON for structured data
-5. **Handle pagination** — `limit`/`offset` params, return `has_more` + `next_offset`
-6. **Handle errors** — Specific messages per HTTP status code (404, 403, 429)
-7. **Set character limits** — Truncate long responses (~25,000 chars) with helpful messages
-
-#### 2.3 Tool Implementation Pattern
-
-**Python (FastMCP):**
-```python
-@mcp.tool(
-    name="service_search_items",
-    annotations={"readOnlyHint": True, "openWorldHint": True}
-)
-async def search_items(query: str, limit: int = 20) -> str:
-    """Search for items matching the query.
-
-    Args:
-        query: Search query string
-        limit: Maximum results to return (1-100, default 20)
-    """
-    results = await api_client.search(query, limit=limit)
-    return format_results_as_markdown(results)
-```
-
-**TypeScript (MCP SDK):**
-```typescript
-server.registerTool(
-  "service_search_items",
-  {
-    title: "Search Items",
-    description: "Search for items matching the query",
-    inputSchema: {
-      query: z.string(),
-      limit: z.number().min(1).max(100).default(20),
-    },
-    annotations: { readOnlyHint: true, openWorldHint: true },
-  },
-  async ({ query, limit }) => {
-    const results = await apiClient.search(query, limit);
-    return { content: [{ type: "text", text: formatResults(results) }] };
-  }
-);
-```
-
-#### 2.4 Response Format Guidelines
-
-- Use **Markdown** for agent-readable responses (headers, tables, lists)
-- Include human-readable identifiers (names alongside IDs)
-- Use readable timestamps (not raw Unix timestamps)
-- For large datasets, paginate and indicate remaining items
-
-#### 2.5 Best Practices
+#### 2.1 Best Practices
 
 Read `references/mcp_best_practices.md` for comprehensive guidelines on:
 - Transport selection (stdio vs streamable HTTP)
@@ -181,11 +110,14 @@ npx ts-node src/index.ts --help
 
 #### 3.3 Integration Test
 
-Configure the server in Claude Code's MCP settings and verify tools work:
+Register the server with Claude Code and verify tools work:
 ```bash
-# Add to ~/.claude/settings.json under mcpServers
-claude mcp add <server-name> -- <command> <args>
+# -s user writes to ~/.claude.json top-level mcpServers (default scope is local → projects.<cwd>.mcpServers;
+# ~/.claude/settings.json has no mcpServers key)
+claude mcp add -s user <server-name> -- <command> <args>
 ```
+On this machine the main line only mounts `mcpproxy` (sole entry in `~/.claude.json`); a server meant for
+daily use is added as an mcpproxy upstream, and direct `claude mcp add` is for isolated testing only.
 
 ### Phase 4: Create Evaluations (Optional)
 
@@ -221,7 +153,7 @@ See `references/evaluation.md` for detailed guidelines and examples.
 ### MCP Config for Claude Code (macOS)
 
 ```json
-// ~/.claude/settings.json
+// ~/.claude.json  (user-scope; ~/.claude/settings.json does not carry mcpServers)
 {
   "mcpServers": {
     "my-server": {
@@ -235,7 +167,7 @@ See `references/evaluation.md` for detailed guidelines and examples.
 
 Or via CLI:
 ```bash
-claude mcp add my-server -- ~/.local/bin/python3 /path/to/server.py
+claude mcp add -s user my-server -- ~/.local/bin/python3 /path/to/server.py
 ```
 
 ## Additional Resources
