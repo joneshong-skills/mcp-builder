@@ -309,7 +309,7 @@ async def main():
         epilog="""
 Examples:
   # Evaluate a local stdio MCP server
-  ~/.local/bin/python3 evaluation.py -t stdio -c /Users/joneshong/.local/bin/python3 -a my_server.py eval.xml
+  ~/.local/bin/python3 evaluation.py -t stdio -c ~/.local/bin/python3 -a my_server.py eval.xml
 
   # Evaluate an SSE MCP server
   ~/.local/bin/python3 evaluation.py -t sse -u https://example.com/mcp -H "Authorization: Bearer token" eval.xml

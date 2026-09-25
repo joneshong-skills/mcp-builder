@@ -150,10 +150,12 @@ See `references/evaluation.md` for detailed guidelines and examples.
 
 ```json
 // ~/.claude.json  (user-scope; ~/.claude/settings.json does not carry mcpServers)
+// command must be an absolute path here: `claude mcp add` below expands ~ for you,
+// and ${VAR} expansion is documented only for project-scope .mcp.json
 {
   "mcpServers": {
     "my-server": {
-      "command": "/Users/joneshong/.local/bin/python3",
+      "command": "/absolute/path/to/python3",
       "args": ["/path/to/server.py"],
       "env": { "API_KEY": "..." }
     }
